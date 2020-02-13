@@ -28,18 +28,6 @@ the following functions: prob_block and capacity
 
 The correct output of this program is shown below.
 
-
-Instructions:
--------------
-1. Download this file and rename it to lab1_XXX.py, where XXX is your BU email/login name.
-For jdoe@bu.edu, the file would be called lab1_jdoe.py
-
-2. Solve the problems below, and make sure of the following requirements:
-    1. Your solution must work in a Python 3 environment. It will be tested on the VM "devbox2020"
-    2. Replace the **\_\_author\_\_** and **\_\_email\_\_** fields at the top of this file with your name and email.
-    3. Do not modify the function names and arguments, as this will interfere with how we validate your solution.
-    You may freely add additional helper functions and classes.
-    4. Document your code. This will help us give you partial credit when a solution is wrong, but the intermediary steps make sense.
 """
 
 
@@ -53,9 +41,6 @@ Given link rate 1000000 and user rate 100000, users active 10.0%
 blocking probability limit of 0.00043, the capacity is
 10 for circuit switching and 35 for packet switching.
 """
-
-# the following function is included so that you can calculate
-# n-choose-k  or C(n,k)
 
 from scipy.special import comb
 import math
@@ -94,19 +79,22 @@ def capacity(R, r, active, block_limit):
     users supported by circuit switching followed by the number of
     users supported by packet switching.
     """
-    # (circuit switching, packet switching)
-    circuit = math.floor(R / r)
-    return (circuit, 15)
+
+    circuit_users = math.floor(R / r)
+
+    prob = 0.0
+    packet_users = 0
+
+    while(prob < block_limit):
+        packet_users += 1
+        prob = prob_block(R, r, active, packet_users)
+
+    packet_users -= 1
+    return (circuit_users, packet_users)
 
 
 def main():
-    # This section is only here so you can run your python code
-    # directly from the command line by typing
-    #   $ python3 lab2_yourname.py
-    # There is nothing to do here.
-    # R = 100
-    # r = 25
-    # N = 7
+
     R = 1000000
     r = 100000
     N = 35
