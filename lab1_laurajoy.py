@@ -6,7 +6,6 @@ __lab__ = "lab1"
 Lab 1 : Switching Capacity
 --------------------------
 
-
 The purpose of this assignment is to confirm
 and further explore the result shown on Chapter 1 slide 30
 of the lecture slides. The scenario describes a situation
@@ -27,12 +26,9 @@ Your task is to confirm this result and extend it by completing
 the following functions: prob_block and capacity
 
 The correct output of this program is shown below.
-
 """
 
-
-
-# Correct output
+# Correct output 
 """
 Given link rate 1000000 and user rate 100000, users active 10.0%
 blocking probability is 0.000424
@@ -45,23 +41,34 @@ blocking probability limit of 0.00043, the capacity is
 from scipy.special import comb
 import math
 
-
 def prob_block(R, r, active, N):
-  """return the probability of blocking on a shared
-  packet switched link, given these parameters:
+    """return the probability of blocking on a shared
+    packet switched link, given these parameters:
 
-  R - data rate of the shared link (b/s)
-  r - data rate of each user when active
-  active - fraction of time each user is active
-  N - number of packet switching users
-  """
-  max_at_once = math.floor(R / r)
-  sum = 0
+    R - data rate of the shared link (b/s)
+    r - data rate of each user when active
+    active - fraction of time each user is active
+    N - number of packet switching users
+    """
 
-  for i in range(N - max_at_once):
-      sum += comb(N, max_at_once + i + 1) * (active)**(max_at_once + i + 1) * (1 - active)**(N - (max_at_once + i + 1))
+    # the maximum number of users that can be supported before they start blocking
+    #  note that this is the same as the number of circuit switching users that can be supported
+    max_at_once = math.floor(R / r)
 
-  return sum
+    # this will hold the probability of blocking
+    sum = 0
+
+    #  this for loop represents the summation of all possibilities greater than the blocking number
+    """
+    for example, if the max number of users before blocking were 4 users, but we have a total number of users as 7, 
+    then this for loop woudl add up the possibility of there being 5 users at once, then 6 users at once, and
+    then 7 users at once
+    """
+    for i in range(N - max_at_once):
+        #  so this line is the probability that max_at_once + i + 1 users are transmitting at once
+        sum += comb(N, max_at_once + i + 1) * (active)**(max_at_once + i + 1) * (1 - active)**(N - (max_at_once + i + 1))
+
+    return sum
 
 
 def capacity(R, r, active, block_limit):
@@ -85,10 +92,13 @@ def capacity(R, r, active, block_limit):
     prob = 0.0
     packet_users = 0
 
+    # continually check if probability of blocking exceeds limit
     while(prob < block_limit):
+        #  if it doesn't, increase the num of users and recalculate probability
         packet_users += 1
         prob = prob_block(R, r, active, packet_users)
 
+    # once we exceed our limit, we need to backtrack one to give the max users that does NOT exceed the limit
     packet_users -= 1
     return (circuit_users, packet_users)
 
