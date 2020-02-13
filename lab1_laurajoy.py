@@ -58,6 +58,7 @@ blocking probability limit of 0.00043, the capacity is
 # n-choose-k  or C(n,k)
 
 from scipy.special import comb
+import math
 
 
 def prob_block(R, r, active, N):
@@ -69,27 +70,33 @@ def prob_block(R, r, active, N):
   active - fraction of time each user is active
   N - number of packet switching users
   """
+  max_at_once = math.floor(R / r)
+  sum = 0
 
-  return 0.1
+  for i in range(N - max_at_once):
+      sum += comb(N, max_at_once + i + 1) * (active)**(max_at_once + i + 1) * (1 - active)**(N - (max_at_once + i + 1))
+
+  return sum
 
 
 def capacity(R, r, active, block_limit):
-  """return the number of users that can be supported on a
-  shared link using circuit switching and using packet switching,
-  given these parameters:
+    """return the number of users that can be supported on a
+    shared link using circuit switching and using packet switching,
+    given these parameters:
 
-  R - data rate of the shared link (b/s)
-  r - data rate of each user when active (b/s)
-  active - fraction of time each user is active
-  block_limit - maximum probability of blocking that is acceptable
+    R - data rate of the shared link (b/s)
+    r - data rate of each user when active (b/s)
+    active - fraction of time each user is active
+    block_limit - maximum probability of blocking that is acceptable
     for the packet switching case.
 
-  The return value should be a two-tuple containing the number of
-  users supported by circuit switching followed by the number of
-  users supported by packet switching.
-  """
-
-  return (5, 15)
+    The return value should be a two-tuple containing the number of
+    users supported by circuit switching followed by the number of
+    users supported by packet switching.
+    """
+    # (circuit switching, packet switching)
+    circuit = math.floor(R / r)
+    return (circuit, 15)
 
 
 def main():
@@ -97,10 +104,13 @@ def main():
     # directly from the command line by typing
     #   $ python3 lab2_yourname.py
     # There is nothing to do here.
-    R=1000000
-    r=100000
+    # R = 100
+    # r = 25
+    # N = 7
+    R = 1000000
+    r = 100000
+    N = 35
     active = 0.1
-    N=35
     pb = prob_block(R, r, active, N)
 
     print(f"Given link rate {R} and user rate {r}, users active {active:.1%}")
