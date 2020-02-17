@@ -38,7 +38,7 @@ By default, traceroute only queries three times per 'TTL'. Look up the manpage o
 **Goal:** This function should return a list of traceroute output strings (similar to the helper function) with timing data from 10 query probes.
 """
 
-    # this is essentially teh same as the helper function, with the addition of the query arg
+    # this is essentially the same as the helper function, with the addition of the query arg
     # adding the "-q 10" argument increases the # of probe queries to 10
     tr = subprocess.run(
         ["traceroute", "-q 10", host], stdout=subprocess.PIPE)  # executing traceroute as a subprocess
@@ -59,8 +59,20 @@ A code skeleton is given below for reference, feel free to adapt or replace.
     hopstats = []
     for t in traceresult:
         # extract times
-        avg = 0     # calculate average
-        std = 0     # calculate standard deviation
+        print(t)
+        trace_array = t.split('  ')
+        if len(trace_array) > 4:
+            # times = ['3.141 ms', '5.926 ms', '5.358 ms']
+            times = [trace_array[2], trace_array[3], trace_array[4]]
+            index = 0
+            for time in times:
+                times[index] = float(time[:-3])
+                index += 1
+
+        # times = [3.141, 5.926, 5.358]
+
+        avg = sum(times) / len(times)     # calculate average
+        std = statistics.stdev(times)     # calculate standard deviation
         hopstats.append((avg, std))
     return hopstats
 
@@ -109,10 +121,12 @@ def _raw_traceroute(host):
 
 
 def main():
-    fah = lab2_problem1()
-    print(fah)
-    print("\n")
-    # lab2_problem2()
+    # long_trace = lab2_problem1()
+    hops = lab2_problem2()
+
+    for item in hops:
+        print(item)
+
     # lab2_problem3()
 
 
