@@ -145,9 +145,13 @@ def _raw_traceroute(host):
 
 
 def main():
-    # long_trace = lab2_problem1()
-    # hops = lab2_problem2()
-    lab2_problem3()
+    long_trace = lab2_problem1()
+    print(long_trace)
+    print("\n")
+    hops = lab2_problem2()
+    for item in hops:
+        print(item)
+    # lab2_problem3()
 
 
 if __name__ == "__main__":
