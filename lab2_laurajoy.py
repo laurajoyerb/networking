@@ -59,9 +59,7 @@ A code skeleton is given below for reference, feel free to adapt or replace.
     hopstats = []
     for t in traceresult:
         # extract times
-        print(t)
         trace_array = t.split('  ')
-        times = []
         if len(trace_array) > 4:
             # times = ['3.141 ms', '5.926 ms', '5.358 ms']
             times = [trace_array[2], trace_array[3], trace_array[4]]
@@ -70,11 +68,10 @@ A code skeleton is given below for reference, feel free to adapt or replace.
                 times[index] = float(time[:-3])
                 index += 1
 
-        # times = [3.141, 5.926, 5.358]
-
-        avg = sum(times) / len(times)     # calculate average
-        std = statistics.stdev(times)     # calculate standard deviation
-        hopstats.append((avg, std))
+            # times = [3.141, 5.926, 5.358]
+            avg = sum(times) / len(times)     # calculate average
+            std = statistics.stdev(times)     # calculate standard deviation
+            hopstats.append((avg, std))
     return hopstats
 
 
