@@ -89,20 +89,19 @@ def lab2_problem3():
     """
 
     # perform traceroutes
-    # stanford_trace = _raw_traceroute("stanford.edu")
+    stanford_trace = _raw_traceroute("stanford.edu")
     ethz_trace = _raw_traceroute("www.ethz.ch")
     tum_trace = _raw_traceroute("www.tum.de")
-    print("Done with traceroutes\n")
 
     stanford_hops = []
     ethz_hops =[]
     tum_hops =[]
 
     # get only hops from traceroute results
-    # for s in stanford_trace:
-    #     stanford_arr = s.split('  ')
-    #     if len(stanford_arr) > 4:
-    #         stanford_hops.append(stanford_arr[1])
+    for s in stanford_trace:
+        stanford_arr = s.split('  ')
+        if len(stanford_arr) > 4:
+            stanford_hops.append(stanford_arr[1])
     
     for s in ethz_trace:
         ethz_arr = s.split('  ')
@@ -175,12 +174,12 @@ def _raw_traceroute(host):
 
 
 def main():
-    # long_trace = lab2_problem1()
-    # print(long_trace)
-    # print("\n")
-    # hops = lab2_problem2()
-    # for item in hops:
-    #     print(item)
+    long_trace = lab2_problem1()
+    print(long_trace)
+    print("\n")
+    hops = lab2_problem2()
+    for item in hops:
+        print(item)
     same_hops = lab2_problem3()
     for item in same_hops:
         print(item, end=", ")
