@@ -61,6 +61,7 @@ A code skeleton is given below for reference, feel free to adapt or replace.
         # extract times
         print(t)
         trace_array = t.split('  ')
+        times = []
         if len(trace_array) > 4:
             # times = ['3.141 ms', '5.926 ms', '5.358 ms']
             times = [trace_array[2], trace_array[3], trace_array[4]]
