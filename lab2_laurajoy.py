@@ -88,14 +88,17 @@ def lab2_problem3():
     * the hops that are common between b. and c.
     """
 
+    # perform traceroutes
     # stanford_trace = _raw_traceroute("stanford.edu")
     ethz_trace = _raw_traceroute("www.ethz.ch")
     tum_trace = _raw_traceroute("www.tum.de")
+    print("Done with traceroutes\n")
 
-    # stanford_hops = []
+    stanford_hops = []
     ethz_hops =[]
     tum_hops =[]
 
+    # get only hops from traceroute results
     # for s in stanford_trace:
     #     stanford_arr = s.split('  ')
     #     if len(stanford_arr) > 4:
@@ -111,9 +114,38 @@ def lab2_problem3():
         if len(tum_arr) > 4:
             tum_hops.append(tum_arr[1])
 
+    # calculate the common hops
     commonhops = [0, 0, 0]
 
-    # do the thing
+    # common between a and b
+    # finds shortest length
+    length = len(stanford_hops) if (len(stanford_hops) < len(ethz_hops)) else len(ethz_hops)
+
+    for i in range(length):
+        if stanford_hops[i] == ethz_hops[i]:
+            # increments whenever hops match
+            commonhops[0] += 1
+
+    # common between a and c
+    # finds shortest length
+    length = len(stanford_hops) if (len(stanford_hops)
+                                    < len(tum_hops)) else len(tum_hops)
+
+    for i in range(length):
+        if stanford_hops[i] == tum_hops[i]:
+            # increments whenever hops match
+            commonhops[1] += 1
+
+    # common between b and c
+    # finds shortest length
+    length = len(ethz_hops) if (len(ethz_hops)
+                                    < len(tum_hops)) else len(tum_hops)
+
+    for i in range(length):
+        if ethz_hops[i] == tum_hops[i]:
+            # increments whenever hops match
+            commonhops[2] += 1
+            print("\n" + ethz_hops[i] + "    " + tum_hops[i] + "\n")
 
     return commonhops
 
@@ -143,13 +175,16 @@ def _raw_traceroute(host):
 
 
 def main():
-    long_trace = lab2_problem1()
-    print(long_trace)
+    # long_trace = lab2_problem1()
+    # print(long_trace)
+    # print("\n")
+    # hops = lab2_problem2()
+    # for item in hops:
+    #     print(item)
+    same_hops = lab2_problem3()
+    for item in same_hops:
+        print(item, end=", ")
     print("\n")
-    hops = lab2_problem2()
-    for item in hops:
-        print(item)
-    # lab2_problem3()
 
 
 if __name__ == "__main__":
