@@ -13,14 +13,14 @@ Traceroute is a simple utility that can be run from any Internet host. When the 
 specifies a certain host destination name, Traceroute shows the name and roundtrip
 time of each router along the way from the source to the destination (including).
 
-1. Download this file and rename it to lab2_XXX.py, where XXX is your BU email/login name. 
+1. Download this file and rename it to lab2_XXX.py, where XXX is your BU email/login name.
 For jdoe@bu.edu, the file would be called lab2_jdoe.py
 
 2. Solve the problems below, and make sure of the following requirements:
     1. Your solution must work in a Python 3 environment.
     2. Replace the **\_\_author\_\_** and **\_\_email\_\_** fields at the top of this file with your name and email.
     3. Do not modify the function names and arguments, as this will interfere with how we validate your solution. You may freely add additional helper functions and classes.
-    4. Document your code. This will help us give you partial credit when a solution is wrong, but the intermediary steps make sense. 
+    4. Document your code. This will help us give you partial credit when a solution is wrong, but the intermediary steps make sense.
 """
 
 
@@ -29,19 +29,21 @@ def lab2_problem1(host='bu.edu'):
 
 You have seen in class how the traceroute command-line utility can be used to measure the roundtrip time to a specific host. A simple example of how to call traceroute from within Python is given here:
 
-    for s in _raw_traceroute('bu.edu'): 
-        print(s.split('  ')) 
-        # then do something with the extracted output 
+    for s in _raw_traceroute('bu.edu'):
+        print(s.split('  '))
+        # then do something with the extracted output
 
 By default, traceroute only queries three times per 'TTL'. Look up the manpage of traceroute to find out how to change the number of queries. Then, adapt the helper function (or write your own new implementation below) such that the traceresult variable contains a traceroute run that uses 10 queries. You may have to look up the documentation for Python's 'subprocess' module to see how to change its input.
 
 **Goal:** This function should return a list of traceroute output strings (similar to the helper function) with timing data from 10 query probes.
 """
 
-    # this is essentially the same as the helper function, with the addition of the query arg
+    # this is from the helper function, with the addition of the query arg
     # adding the "-q 10" argument increases the # of probe queries to 10
+
+    # executing traceroute as a subprocess
     tr = subprocess.run(
-        ["traceroute", "-q 10", host], stdout=subprocess.PIPE)  # executing traceroute as a subprocess
+        ["traceroute", "-q 10", host], stdout=subprocess.PIPE)
     # return a list of strings containing the traceroute output
     return tr.stdout.decode("utf-8").split('\n')
 
@@ -97,15 +99,15 @@ def lab2_problem3():
     tum_trace = _raw_traceroute("www.tum.de")
 
     stanford_hops = []
-    ethz_hops =[]
-    tum_hops =[]
+    ethz_hops = []
+    tum_hops = []
 
     # get only hops from traceroute results
     for s in stanford_trace:
         stanford_arr = s.split('  ')
         if len(stanford_arr) > 4:
             stanford_hops.append(stanford_arr[1])
-    
+
     for s in ethz_trace:
         ethz_arr = s.split('  ')
         if len(ethz_arr) > 4:
@@ -147,15 +149,14 @@ def lab2_problem3():
         if ethz_hops[i] == tum_hops[i]:
             # increments whenever hops match
             commonhops[2] += 1
-            print("\n" + ethz_hops[i] + "    " + tum_hops[i] + "\n")
 
     return commonhops
 
 
 """ ### Helper Functions
 
-Helper functions are defined with a leading underscore (e.g. def _helper_function()). 
-These functions are provided for your convenience, you may use them as provided, 
+Helper functions are defined with a leading underscore (e.g. def _helper_function()).
+These functions are provided for your convenience, you may use them as provided,
 change them, or use an alternative solution altogether.
 """
 
@@ -164,8 +165,10 @@ def _raw_traceroute(host):
     """ The helper function **_raw_traceroute(host)** calls traceroute on a 
     host and returns a list of the results.
     """
+
+    # executing traceroute as a subprocess
     tr = subprocess.run(
-        ["traceroute", host], stdout=subprocess.PIPE)  # executing traceroute as a subprocess
+        ["traceroute", host], stdout=subprocess.PIPE)
     # return a list of strings containing the traceroute output
     return tr.stdout.decode("utf-8").split('\n')
 
@@ -178,11 +181,12 @@ def _raw_traceroute(host):
 
 def main():
     long_trace = lab2_problem1()
-    print(long_trace)
-    print("\n")
-    hops = lab2_problem2()
-    for item in hops:
+    print(long_trace, end="\n")
+
+    hops_math = lab2_problem2()
+    for item in hops_math:
         print(item)
+
     same_hops = lab2_problem3()
     for item in same_hops:
         print(item, end=", ")
