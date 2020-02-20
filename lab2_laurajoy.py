@@ -61,17 +61,20 @@ A code skeleton is given below for reference, feel free to adapt or replace.
         # extract times
         trace_array = t.split('  ')
         if len(trace_array) > 4:
-            # times = ['3.141 ms', '5.926 ms', '5.358 ms']
-            times = [trace_array[2], trace_array[3], trace_array[4]]
-            index = 0
-            for time in times:
-                times[index] = float(time[:-3])
-                index += 1
+            # verifies these three are times
+            if (trace_array[2][-2:] == 'ms') & (trace_array[3][-2:] == 'ms') & (trace_array[4][-2:] == 'ms'):
+                # times = ['3.141 ms', '5.926 ms', '5.358 ms']
+                times = [trace_array[2], trace_array[3], trace_array[4]]
+                index = 0
+                for time in times:
+                    #  removes last three chars (ie, ' ms') and converts to float
+                    times[index] = float(time[:-3])
+                    index += 1
 
-            # times = [3.141, 5.926, 5.358]
-            avg = sum(times) / len(times)     # calculate average
-            std = statistics.stdev(times)     # calculate standard deviation
-            hopstats.append((avg, std))
+                # times = [3.141, 5.926, 5.358]
+                avg = sum(times) / len(times)     # calculate average
+                std = statistics.stdev(times)     # calculate standard deviation
+                hopstats.append((avg, std))
     return hopstats
 
 
