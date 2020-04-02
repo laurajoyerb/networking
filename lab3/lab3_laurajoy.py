@@ -57,7 +57,7 @@ class CalcTextServer(object):
             self.conn, self.addr = self.socket.accept()
             # Send the Announcement
             ## TODO send the correct Announcement according to CTTP
-            self.conn.sendall(b"TODO: Usage Instructions")
+            self.conn.sendall(b"CTTP/1.0 HELP\nADD SUB MUL DIV ABS SQRT")
 
             # Accept a Request until this condition is set to False
             accept_query = True
