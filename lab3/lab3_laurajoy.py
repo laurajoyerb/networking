@@ -87,10 +87,19 @@ class CalcTextServer(object):
                         message = "CTTP/1.0 CALC\n" + str(result)
 
                     self.conn.sendall(message.encode())
+
                 elif "SUB" in request:
                     result = self.sub(request)
 
-                    message = "CTTP/1.0 CALC\n" + str(result)
+                    if result == "format":
+                        message = "CTTP/1.0 ERROR\nError: Wrong format for SUB"
+                    elif result == "number of args":
+                        message = "CTTP/1.0 ERROR\nError: Wrong number of arguments for SUB"
+                    elif result == "not numbers":
+                        message = "CTTP/1.0 ERROR\nError: Wrong arguments for SUB"
+                    else:
+                        message = "CTTP/1.0 CALC\n" + str(result)
+
                     self.conn.sendall(message.encode())
 
                 elif "MUL" in request:
@@ -150,7 +159,25 @@ class CalcTextServer(object):
         return error
 
     def sub(self, request):
-        return 1
+        args = request.split(' ')
+
+        error = ""
+
+        # checks that format of message is correct
+        if (args[0] == "CTTP/1.0") & (args[1] == "CALC") & (args[2] == "SUB"):
+            #  verifies that there are enough operands to add
+            if len(args) == 5:
+                # verifies that arguments passed are numeric
+                if is_valid_number(args[3]) & is_valid_number(args[4]):
+                    res = float(args[3]) - float(args[4])
+                    return res
+                error = "not numbers"
+            else:
+                error = "number of args"
+        else:
+            error = "format"
+
+        return error
 
     def mul(self, request):
         return 1
