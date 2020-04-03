@@ -120,7 +120,7 @@ class CalcTextServer(object):
                     elif result == "number of args":
                         message = "CTTP/1.0 ERROR\nError: Wrong number of arguments for ADD"
                     elif result == "not numbers":
-                        message = "CTTP/1.0 ERROR\nError: Wrong arguments for ADD"
+                        message = "CTTP/1.0 ERROR\nError: Invalid arguments for ADD"
                     else:
                         message = "CTTP/1.0 CALC\n" + str(result)
 
@@ -134,7 +134,7 @@ class CalcTextServer(object):
                     elif result == "number of args":
                         message = "CTTP/1.0 ERROR\nError: Wrong number of arguments for SUB"
                     elif result == "not numbers":
-                        message = "CTTP/1.0 ERROR\nError: Wrong arguments for SUB"
+                        message = "CTTP/1.0 ERROR\nError: Invalid arguments for SUB"
                     else:
                         message = "CTTP/1.0 CALC\n" + str(result)
 
@@ -148,7 +148,7 @@ class CalcTextServer(object):
                     elif result == "number of args":
                         message = "CTTP/1.0 ERROR\nError: Wrong number of arguments for MUL"
                     elif result == "not numbers":
-                        message = "CTTP/1.0 ERROR\nError: Wrong arguments for MUL"
+                        message = "CTTP/1.0 ERROR\nError: Invalid arguments for MUL"
                     else:
                         message = "CTTP/1.0 CALC\n" + str(result)
 
@@ -162,7 +162,7 @@ class CalcTextServer(object):
                     elif result == "number of args":
                         message = "CTTP/1.0 ERROR\nError: Wrong number of arguments for DIV"
                     elif result == "not numbers":
-                        message = "CTTP/1.0 ERROR\nError: Wrong arguments for DIV"
+                        message = "CTTP/1.0 ERROR\nError: Invalid arguments for DIV"
                     elif result == "zero":
                         message = "CTTP/1.0 ERROR\nError: Cannot divide by zero"
                     else:
@@ -178,7 +178,7 @@ class CalcTextServer(object):
                     elif result == "number of args":
                         message = "CTTP/1.0 ERROR\nError: Wrong number of arguments for ABS"
                     elif result == "not numbers":
-                        message = "CTTP/1.0 ERROR\nError: Wrong arguments for ABS"
+                        message = "CTTP/1.0 ERROR\nError: Invalid arguments for ABS"
                     else:
                         message = "CTTP/1.0 CALC\n" + str(result)
 
@@ -192,13 +192,17 @@ class CalcTextServer(object):
                     elif result == "number of args":
                         message = "CTTP/1.0 ERROR\nError: Wrong number of arguments for SQRT"
                     elif result == "not numbers":
-                        message = "CTTP/1.0 ERROR\nError: Wrong arguments for SQRT"
+                        message = "CTTP/1.0 ERROR\nError: Invalid arguments for SQRT"
                     elif result == "negative":
                         message = "CTTP/1.0 ERROR\nError: Cannot SQRT a negative number"
                     else:
                         message = "CTTP/1.0 CALC\n" + str(result)
 
                     self.conn.sendall(message.encode())
+
+                elif "HELP" in request:
+                    self.conn.sendall(
+                        b"CTTP/1.0 HELP\nADD SUB MUL DIV ABS SQRT")
 
                 elif "BYE" in request:
                     self.conn.sendall(b"CTTP/1.0 KTHXBYE\n")
