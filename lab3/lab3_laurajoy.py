@@ -43,6 +43,25 @@ def is_valid_number(num):
 
     return False
 
+def valid_args(args, operation):
+    error = "none"
+
+    #  verifies that there are enough operands to perform calculation
+    if len(args) == 5:
+        # checks that format of message is correct
+        if (args[0] == "CTTP/1.0") & (args[1] == "CALC") & (args[2] == operation):
+            # verifies that arguments passed are numeric
+            if is_valid_number(args[3]) & is_valid_number(args[4]):
+                return error
+                
+            error = "not numbers"
+        else:
+            error = "format"
+    else:
+        error = "number of args"
+
+    return error
+
 class CalcTextServer(object):
     """ A CTTP Server implementation.
 
@@ -105,13 +124,31 @@ class CalcTextServer(object):
                 elif "MUL" in request:
                     result = self.mul(request)
 
-                    message = "CTTP/1.0 CALC\n" + str(result)
+                    if result == "format":
+                        message = "CTTP/1.0 ERROR\nError: Wrong format for MUL"
+                    elif result == "number of args":
+                        message = "CTTP/1.0 ERROR\nError: Wrong number of arguments for MUL"
+                    elif result == "not numbers":
+                        message = "CTTP/1.0 ERROR\nError: Wrong arguments for MUL"
+                    else:
+                        message = "CTTP/1.0 CALC\n" + str(result)
+
                     self.conn.sendall(message.encode())
 
                 elif "DIV" in request:
                     result = self.div(request)
 
-                    message = "CTTP/1.0 CALC\n" + str(result)
+                    if result == "format":
+                        message = "CTTP/1.0 ERROR\nError: Wrong format for DIV"
+                    elif result == "number of args":
+                        message = "CTTP/1.0 ERROR\nError: Wrong number of arguments for DIV"
+                    elif result == "not numbers":
+                        message = "CTTP/1.0 ERROR\nError: Wrong arguments for DIV"
+                    elif result == "zero":
+                        message = "CTTP/1.0 ERROR\nError: Cannot divide by zero"
+                    else:
+                        message = "CTTP/1.0 CALC\n" + str(result)
+
                     self.conn.sendall(message.encode())
 
                 elif "ABS" in request:
@@ -139,51 +176,41 @@ class CalcTextServer(object):
 
     def add(self, request):
         args = request.split(' ')
+        error = valid_args(args, "ADD")
 
-        error = ""
-
-        # checks that format of message is correct
-        if (args[0] == "CTTP/1.0") & (args[1] == "CALC") & (args[2] == "ADD"):
-            #  verifies that there are enough operands to add
-            if len(args) == 5:
-                # verifies that arguments passed are numeric
-                if is_valid_number(args[3]) & is_valid_number(args[4]):
-                    res = float(args[3]) + float(args[4])
-                    return res
-                error = "not numbers"
-            else:
-                error = "number of args"
-        else:
-            error = "format"
+        if error == "none":
+            return float(args[3]) + float(args[4])
 
         return error
 
     def sub(self, request):
         args = request.split(' ')
+        error = valid_args(args, "SUB")
 
-        error = ""
-
-        # checks that format of message is correct
-        if (args[0] == "CTTP/1.0") & (args[1] == "CALC") & (args[2] == "SUB"):
-            #  verifies that there are enough operands to add
-            if len(args) == 5:
-                # verifies that arguments passed are numeric
-                if is_valid_number(args[3]) & is_valid_number(args[4]):
-                    res = float(args[3]) - float(args[4])
-                    return res
-                error = "not numbers"
-            else:
-                error = "number of args"
-        else:
-            error = "format"
+        if error == "none":
+            return float(args[3]) - float(args[4])
 
         return error
 
     def mul(self, request):
-        return 1
+        args = request.split(' ')
+        error = valid_args(args, "MUL")
+
+        if error == "none":
+            return float(args[3]) * float(args[4])
+
+        return error
 
     def div(self, request):
-        return 1
+        args = request.split(' ')
+        error = valid_args(args, "DIV")
+
+        if error == "none":
+            if float(args[4]) != 0:
+                return float(args[3]) / float(args[4])
+            error = "zero"
+
+        return error
 
     def abs(self, request):
         return 1
