@@ -81,6 +81,22 @@ def valid_args(args, operation):
 
     return error
 
+def result_message(result, operation):
+    if result == "format":
+        message = "CTTP/1.0 ERROR\nError: Wrong format for " + operation
+    elif result == "number of args":
+        message = "CTTP/1.0 ERROR\nError: Wrong number of arguments for " + operation
+    elif result == "not numbers":
+        message = "CTTP/1.0 ERROR\nError: Invalid arguments for " + operation
+    elif result == "zero":
+        message = "CTTP/1.0 ERROR\nError: Cannot divide by zero"
+    elif result == "negative":
+        message = "CTTP/1.0 ERROR\nError: Cannot SQRT a negative number"
+    else:
+        message = "CTTP/1.0 CALC\n" + str(result)
+
+    return message
+
 class CalcTextServer(object):
     """ A CTTP Server implementation.
 
@@ -115,90 +131,44 @@ class CalcTextServer(object):
                 if "ADD" in request:
                     result = self.add(request)
 
-                    if result == "format":
-                        message = "CTTP/1.0 ERROR\nError: Wrong format for ADD"
-                    elif result == "number of args":
-                        message = "CTTP/1.0 ERROR\nError: Wrong number of arguments for ADD"
-                    elif result == "not numbers":
-                        message = "CTTP/1.0 ERROR\nError: Invalid arguments for ADD"
-                    else:
-                        message = "CTTP/1.0 CALC\n" + str(result)
+                    msg = result_message(result, "ADD")
 
-                    self.conn.sendall(message.encode())
+                    self.conn.sendall(msg.encode())
 
                 elif "SUB" in request:
                     result = self.sub(request)
 
-                    if result == "format":
-                        message = "CTTP/1.0 ERROR\nError: Wrong format for SUB"
-                    elif result == "number of args":
-                        message = "CTTP/1.0 ERROR\nError: Wrong number of arguments for SUB"
-                    elif result == "not numbers":
-                        message = "CTTP/1.0 ERROR\nError: Invalid arguments for SUB"
-                    else:
-                        message = "CTTP/1.0 CALC\n" + str(result)
+                    msg = result_message(result, "SUB")
 
-                    self.conn.sendall(message.encode())
+                    self.conn.sendall(msg.encode())
 
                 elif "MUL" in request:
                     result = self.mul(request)
 
-                    if result == "format":
-                        message = "CTTP/1.0 ERROR\nError: Wrong format for MUL"
-                    elif result == "number of args":
-                        message = "CTTP/1.0 ERROR\nError: Wrong number of arguments for MUL"
-                    elif result == "not numbers":
-                        message = "CTTP/1.0 ERROR\nError: Invalid arguments for MUL"
-                    else:
-                        message = "CTTP/1.0 CALC\n" + str(result)
+                    msg = result_message(result, "MUL")
 
-                    self.conn.sendall(message.encode())
+                    self.conn.sendall(msg.encode())
 
                 elif "DIV" in request:
                     result = self.div(request)
 
-                    if result == "format":
-                        message = "CTTP/1.0 ERROR\nError: Wrong format for DIV"
-                    elif result == "number of args":
-                        message = "CTTP/1.0 ERROR\nError: Wrong number of arguments for DIV"
-                    elif result == "not numbers":
-                        message = "CTTP/1.0 ERROR\nError: Invalid arguments for DIV"
-                    elif result == "zero":
-                        message = "CTTP/1.0 ERROR\nError: Cannot divide by zero"
-                    else:
-                        message = "CTTP/1.0 CALC\n" + str(result)
+                    msg = result_message(result, "DIV")
 
-                    self.conn.sendall(message.encode())
+                    self.conn.sendall(msg.encode())
 
                 elif "ABS" in request:
                     result = self.abs(request)
 
-                    if result == "format":
-                        message = "CTTP/1.0 ERROR\nError: Wrong format for ABS"
-                    elif result == "number of args":
-                        message = "CTTP/1.0 ERROR\nError: Wrong number of arguments for ABS"
-                    elif result == "not numbers":
-                        message = "CTTP/1.0 ERROR\nError: Invalid arguments for ABS"
-                    else:
-                        message = "CTTP/1.0 CALC\n" + str(result)
+                    msg = result_message(result, "ABS")
 
-                    self.conn.sendall(message.encode())
+                    self.conn.sendall(msg.encode())
 
                 elif "SQRT" in request:
                     result = self.sqrt(request)
 
-                    if result == "format":
-                        message = "CTTP/1.0 ERROR\nError: Wrong format for SQRT"
-                    elif result == "number of args":
-                        message = "CTTP/1.0 ERROR\nError: Wrong number of arguments for SQRT"
-                    elif result == "not numbers":
-                        message = "CTTP/1.0 ERROR\nError: Invalid arguments for SQRT"
-                    elif result == "negative":
-                        message = "CTTP/1.0 ERROR\nError: Cannot SQRT a negative number"
-                    else:
-                        message = "CTTP/1.0 CALC\n" + str(result)
+                    msg = result_message(result, "SQRT")
 
-                    self.conn.sendall(message.encode())
+                    self.conn.sendall(msg.encode())
 
                 elif "HELP" in request:
                     self.conn.sendall(
