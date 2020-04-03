@@ -43,6 +43,25 @@ def is_valid_number(num):
 
     return False
 
+def valid_args_single(args, operation):
+    error = "none"
+
+    #  verifies that there are enough operands to perform calculation
+    if len(args) == 4:
+        # checks that format of message is correct
+        if (args[0] == "CTTP/1.0") & (args[1] == "CALC") & (args[2] == operation):
+            # verifies that arguments passed are numeric
+            if is_valid_number(args[3]):
+                return error
+
+            error = "not numbers"
+        else:
+            error = "format"
+    else:
+        error = "number of args"
+
+    return error
+
 def valid_args(args, operation):
     error = "none"
 
@@ -154,13 +173,31 @@ class CalcTextServer(object):
                 elif "ABS" in request:
                     result = self.abs(request)
 
-                    message = "CTTP/1.0 CALC\n" + str(result)
+                    if result == "format":
+                        message = "CTTP/1.0 ERROR\nError: Wrong format for ABS"
+                    elif result == "number of args":
+                        message = "CTTP/1.0 ERROR\nError: Wrong number of arguments for ABS"
+                    elif result == "not numbers":
+                        message = "CTTP/1.0 ERROR\nError: Wrong arguments for ABS"
+                    else:
+                        message = "CTTP/1.0 CALC\n" + str(result)
+
                     self.conn.sendall(message.encode())
 
                 elif "SQRT" in request:
                     result = self.sqrt(request)
 
-                    message = "CTTP/1.0 CALC\n" + str(result)
+                    if result == "format":
+                        message = "CTTP/1.0 ERROR\nError: Wrong format for SQRT"
+                    elif result == "number of args":
+                        message = "CTTP/1.0 ERROR\nError: Wrong number of arguments for SQRT"
+                    elif result == "not numbers":
+                        message = "CTTP/1.0 ERROR\nError: Wrong arguments for SQRT"
+                    elif result == "negative":
+                        message = "CTTP/1.0 ERROR\nError: Cannot SQRT a negative number"
+                    else:
+                        message = "CTTP/1.0 CALC\n" + str(result)
+
                     self.conn.sendall(message.encode())
 
                 elif "BYE" in request:
@@ -213,10 +250,26 @@ class CalcTextServer(object):
         return error
 
     def abs(self, request):
-        return 1
+        args = request.split(' ')
+        error = valid_args_single(args, "ABS")
+
+        if error == "none":
+            return abs(float(args[3]))
+
+        return error
+
 
     def sqrt(self, request):
-        return 1
+        args = request.split(' ')
+        error = valid_args_single(args, "SQRT")
+
+        if error == "none":
+            if float(args[3]) > 0:
+                return math.sqrt(float(args[3]))
+            error = "negative"
+
+        return error
+
 
 
 if __name__ == "__main__":
