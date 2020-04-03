@@ -87,7 +87,36 @@ class CalcTextServer(object):
                         message = "CTTP/1.0 CALC\n" + str(result)
 
                     self.conn.sendall(message.encode())
-                # INSERT THE OTHER COMMAND CASES HERE WITH elif CLAUSES
+                elif "SUB" in request:
+                    result = self.sub(request)
+
+                    message = "CTTP/1.0 CALC\n" + str(result)
+                    self.conn.sendall(message.encode())
+
+                elif "MUL" in request:
+                    result = self.mul(request)
+
+                    message = "CTTP/1.0 CALC\n" + str(result)
+                    self.conn.sendall(message.encode())
+
+                elif "DIV" in request:
+                    result = self.div(request)
+
+                    message = "CTTP/1.0 CALC\n" + str(result)
+                    self.conn.sendall(message.encode())
+
+                elif "ABS" in request:
+                    result = self.abs(request)
+
+                    message = "CTTP/1.0 CALC\n" + str(result)
+                    self.conn.sendall(message.encode())
+
+                elif "SQRT" in request:
+                    result = self.sqrt(request)
+
+                    message = "CTTP/1.0 CALC\n" + str(result)
+                    self.conn.sendall(message.encode())
+
                 elif "BYE" in request:
                     self.conn.sendall(b"CTTP/1.0 KTHXBYE\n")
                     stay_alive = False if terminate_on_close else True
@@ -119,6 +148,21 @@ class CalcTextServer(object):
             error = "format"
 
         return error
+
+    def sub(self, request):
+        return 1
+
+    def mul(self, request):
+        return 1
+
+    def div(self, request):
+        return 1
+
+    def abs(self, request):
+        return 1
+
+    def sqrt(self, request):
+        return 1
 
 
 if __name__ == "__main__":
