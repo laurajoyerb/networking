@@ -34,6 +34,15 @@ back to the Client until the Client terminates the Connection.
 """
 
 
+def is_valid_number(num):
+    try:
+        float(num)
+        return True
+    except ValueError:
+        pass
+
+    return False
+
 class CalcTextServer(object):
     """ A CTTP Server implementation.
 
@@ -56,7 +65,6 @@ class CalcTextServer(object):
             # accept a new connection
             self.conn, self.addr = self.socket.accept()
             # Send the Announcement
-            ## TODO send the correct Announcement according to CTTP
             self.conn.sendall(b"CTTP/1.0 HELP\nADD SUB MUL DIV ABS SQRT")
 
             # Accept a Request until this condition is set to False
@@ -68,13 +76,20 @@ class CalcTextServer(object):
                     break
                 if "ADD" in request:
                     result = self.add(request)
-                    # TODO: Call a function that performs the operation
-                    self.conn.sendall(
-                        b"CTTP/1.0 CALC\nTODO: Actually return something useful here")
+
+                    if result == "format":
+                        message = "CTTP/1.0 ERROR\nError: Wrong format for ADD"
+                    elif result == "number of args":
+                        message = "CTTP/1.0 ERROR\nError: Wrong number of arguments for ADD"
+                    elif result == "not numbers":
+                        message = "CTTP/1.0 ERROR\nError: Wrong arguments for ADD"
+                    else:
+                        message = "CTTP/1.0 CALC\n" + str(result)
+
+                    self.conn.sendall(message.encode())
                 # INSERT THE OTHER COMMAND CASES HERE WITH elif CLAUSES
                 elif "BYE" in request:
-                    self.conn.sendall(
-                        b"CTTP/1.0 BYE\nIt was nice calc'ing to you!")
+                    self.conn.sendall(b"CTTP/1.0 KTHXBYE\n")
                     stay_alive = False if terminate_on_close else True
                     accept_query = False  # jump out of accept_query loop
                 else:
@@ -85,8 +100,25 @@ class CalcTextServer(object):
         self.socket.close()
 
     def add(self, request):
-        # TODO: Parse the request according to CTTP, return the result of the calculation
-        return 1
+        args = request.split(' ')
+
+        error = ""
+
+        # checks that format of message is correct
+        if (args[0] == "CTTP/1.0") & (args[1] == "CALC") & (args[2] == "ADD"):
+            #  verifies that there are enough operands to add
+            if len(args) == 5:
+                # verifies that arguments passed are numeric
+                if is_valid_number(args[3]) & is_valid_number(args[4]):
+                    res = float(args[3]) + float(args[4])
+                    return res
+                error = "not numbers"
+            else:
+                error = "number of args"
+        else:
+            error = "format"
+
+        return error
 
 
 if __name__ == "__main__":
