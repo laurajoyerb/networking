@@ -1,5 +1,5 @@
-__author__ = "Jane Doe"
-__email__ = "jdoe@bu.edu"
+__author__ = "Laura Joy Erb"
+__email__ = "laurajoy@bu.edu"
 __lab__ = "lab3"
 
 import socket
